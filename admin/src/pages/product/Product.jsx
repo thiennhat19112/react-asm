@@ -3,7 +3,7 @@ import "./product.css";
 import Chart from "../../components/chart/Chart";
 import { productData } from "../../dummyData";
 import { Publish } from "@material-ui/icons";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 import { userRequest } from "../../requestMethods";
 import { useRef } from "react";
@@ -13,20 +13,15 @@ export default function Product() {
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
   const [pStats, setPStats] = useState([]);
-  const nameRef = useRef();
-  const priceRef = useRef();
-  const categoriesRef = useRef();
-  const colorRef = useRef();
-  const sizeRef = useRef();
-  const descRef = useRef();
-  const inStockRef = useRef();
-  const imgRef = useRef();
   const dispatch = useDispatch();
-  const history = useHistory()
+  const history = useHistory();
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
-
+  const [inputs, setInputs] = useState(product);
+  const [cat, setCat] = useState([]);
+  const [size, setSize] = useState([]);
+  const [color, setColor] = useState([]);
   const MONTHS = useMemo(
     () => [
       "Jan",
@@ -49,9 +44,9 @@ export default function Product() {
     const getStats = async () => {
       try {
         const res = await userRequest.get("orders/income?pid=" + productId);
-        const list = res.data.sort((a,b)=>{
-            return a._id - b._id
-        })
+        const list = res.data.sort((a, b) => {
+          return a._id - b._id;
+        });
         list.map((item) =>
           setPStats((prev) => [
             ...prev,
@@ -64,20 +59,28 @@ export default function Product() {
     };
     getStats();
   }, [productId, MONTHS]);
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const handleCat = (e) => {
+    setCat(e.target.value.split(","));
+    setInputs((prev) => ({ ...prev, categories : cat}));
+  };
 
+  const handleColor = (e) => {
+    setColor(e.target.value.split(","));
+    setInputs((prev) => ({ ...prev, color : color}));
+  };
+
+  const handleSize = (e) => {
+    setSize(e.target.value.split(","));
+    setInputs((prev) => ({ ...prev, size : size}));
+  };
+
+  console.log(inputs);
   const handleUpdate = (e)=>{
     e.preventDefault();
-    const newProduct = {
-      title : nameRef.current.value,
-      desc : descRef.current.value,
-      price : priceRef.current.value,
-      categories : categoriesRef.current.value.split(","),
-      size : sizeRef.current.value.split(","),
-      color : colorRef.current.value.split(","),
-      inStock : inStockRef.current.value,
-      img : product.img
-    }
-    console.log(productId);
+    const {createdAt, updatedAt,__v,_id , ...newProduct} = inputs;
     updateProduct(productId,newProduct,dispatch);
     window.alert("sua thanh cong!")
     history.goBack();
@@ -117,22 +120,37 @@ export default function Product() {
         </div>
       </div>
       <div className="productBottom">
-        <form  className="productForm">
+        <form className="productForm">
           <div className="productFormLeft">
             <label>Product Name</label>
-            <input ref={nameRef} name="name" type="text" placeholder={product?.title} />
+            <input
+              onChange={ handleChange}
+              name="title"
+              type="text"
+              placeholder={product?.title}
+            />
             <label>Product Description</label>
-            <input ref={descRef} name="desc" type="text" placeholder={product?.desc} />
+            <input
+              onChange={ handleChange}
+              name="desc"
+              type="text"
+              placeholder={product?.desc}
+            />
             <label>Price</label>
-            <input ref={priceRef}  name="price" type="text" placeholder={product?.price} />
+            <input
+              onChange={handleChange}
+              name="price"
+              type="text"
+              placeholder={product?.price}
+            />
             <label>Categories</label>
-            <input ref={categoriesRef} type="text" placeholder={product?.categories.toString()} />
+            <input onChange={handleCat} type="text" placeholder={product?.categories.toString()} />
             <label>Size</label>
-            <input ref={sizeRef} name="size" type="text" placeholder={product?.size.toString()} />
+            <input onChange={handleSize} type="text" placeholder={product?.size.toString()} />
             <label>Color</label>
-            <input ref={colorRef} name="color" type="text" placeholder={product?.color.toString()} />
+            <input onChange={handleColor} type="text" placeholder={product?.color.toString()} />
             <label>In Stock</label>
-            <select ref={inStockRef}  name="inStock" id="idStock">
+            <select onChange={ handleChange} name="inStock" id="idStock">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -143,9 +161,11 @@ export default function Product() {
               <label for="file">
                 <Publish />
               </label>
-              <input ref={imgRef} type="file" id="file" style={{ display: "none" }} />
+              <input type="file" id="file" style={{ display: "none" }} />
             </div>
-            <button onClick={handleUpdate} type="button" className="productButton">Update</button>
+            <button type="button" onClick={handleUpdate} className="productButton">
+              Update
+            </button>
           </div>
         </form>
       </div>

@@ -32,7 +32,7 @@ const Container = styled.div`
   justify-content: center;
   background-color: #f5fbfd;
   position: relative;
-
+  overflow: hidden;
   &:hover ${Info}{
     opacity: 1;
   }
@@ -47,8 +47,9 @@ const Circle = styled.div`
 `;
 
 const Image = styled.img`
-  height: 75%;
   z-index: 2;
+  width:100%;
+  overflow:hidden;
 `;
 
 const Icon = styled.div`
