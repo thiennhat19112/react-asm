@@ -73,7 +73,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const history = useHistory()
+  const history = useHistory();
   const { isFetching, error } = useSelector((state) => state.user);
 
   const handleClick = (e) => {
@@ -84,7 +84,7 @@ const Login = () => {
   return (
     <Container>
       <Wrapper>
-        <Title>SIGN IN</Title>
+        <Title>SIGN IN With PHIENPHIEN</Title>
         <Form>
           <Input
             placeholder="username"

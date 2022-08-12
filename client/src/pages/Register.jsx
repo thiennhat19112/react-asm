@@ -58,7 +58,7 @@ const Register = () => {
   return (
     <Container>
       <Wrapper>
-        <Title>CREATE AN ACCOUNT</Title>
+        <Title>CREATE AN ACCOUNT With PHIENPHIEN</Title>
         <Form>
           <Input placeholder="name" />
           <Input placeholder="last name" />
