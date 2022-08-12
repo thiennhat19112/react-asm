@@ -20,7 +20,6 @@ const userSlice = createSlice({
       state.error = true;
     },
     logOut : (state) =>{
-      localStorage.removeItem("persist:root");
       state.currentUser = null;
     }
   },

@@ -75,12 +75,15 @@ const Login = () => {
   const dispatch = useDispatch();
   const history = useHistory()
   const { isFetching, error } = useSelector((state) => state.user);
+  console.log(error);
 
   const handleClick = (e) => {
     e.preventDefault();
     login(dispatch, { username, password });
     history.goBack();
-  };
+  };  
+
+
   return (
     <Container>
       <Wrapper>
@@ -97,6 +100,9 @@ const Login = () => {
           />
           <Button onClick={handleClick} disabled={isFetching}>
             LOGIN
+          </Button>
+          <Button disabled={isFetching}>
+            Google
           </Button>
           {error && <Error>Something went wrong...</Error>}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>

@@ -44,15 +44,56 @@ router.post("/login", async (req, res) => {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SEC,
-      {expiresIn:"3d"}
+      { expiresIn: "3d" }
     );
 
     const { password, ...others } = user._doc;
 
-    res.status(200).json({...others, accessToken});
+    res.status(200).json({ ...others, accessToken });
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
+router.post("/login/google",async (req,res)=>{
+  const idGoogle = req.body.id;
+  const user = await User.findOne({username:idGoogle});
+  if(!user) {
+    const newUser = new User({
+      username : idGoogle,
+      email : req.body.email,
+      password: CryptoJS.AES.encrypt(
+        idGoogle,
+        process.env.PASS_SEC
+      ).toString(),
+    })
+    try {
+      const savedUser = await newUser.save();
+      const accessToken = jwt.sign(
+        {
+          id: savedUser._id,
+          isAdmin: savedUser.isAdmin,
+        },
+        process.env.JWT_SEC,
+        { expiresIn: "3d" }
+      );
+      const { password, ...others } = savedUser._doc;
+      res.status(200).json({ ...others, accessToken });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }else{
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: "3d" }
+    );
+    const { password, ...others } = user._doc;
+    res.status(200).json({ ...others, accessToken });
+  }
+})
 
 module.exports = router;
