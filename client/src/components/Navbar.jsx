@@ -80,32 +80,34 @@ const Navbar = () => {
     <Container>
       <Wrapper>
         <Left>
-          <Language>EN</Language>
+          <Language>VN</Language>
           <SearchContainer>
             <Input placeholder="Search" />
             <Search style={{ color: "gray", fontSize: 16 }} />
           </SearchContainer>
         </Left>
         <Center>
-          <Logo>LAMA.</Logo>
+          <Logo>
+            <Link to={"/"}>PHIENPHIEN</Link>
+          </Logo>
         </Center>
         <Right>
           {user ? (
             <>
               <span onClick={handleLogout}>
-                <MenuItem>LOGOUT</MenuItem>
+                <MenuItem>ĐĂNG XUẤT</MenuItem>
               </span>
               <Link to={"/orders"}>
-                <MenuItem>Your order</MenuItem>
+                <MenuItem>GIỎ HÀNG</MenuItem>
               </Link>
             </>
           ) : (
             <>
               <Link to={"/register"}>
-                <MenuItem>REGISTER</MenuItem>
+                <MenuItem>ĐĂNG KÝ</MenuItem>
               </Link>
               <Link to={"/login"}>
-                <MenuItem>SIGN IN</MenuItem>
+                <MenuItem>ĐĂNG NHẬP</MenuItem>
               </Link>
             </>
           )}

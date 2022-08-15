@@ -16,11 +16,12 @@ const Title = styled.h1`
 `;
 
 const Desc = styled.div`
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap");
+  font-family: "Roboto";
   font-size: 24px;
   font-weight: 300;
   margin-bottom: 20px;
   ${mobile({ textAlign: "center" })}
-
 `;
 
 const InputContainer = styled.div`
@@ -49,8 +50,10 @@ const Button = styled.button`
 const Newsletter = () => {
   return (
     <Container>
-      <Title>Newsletter</Title>
-      <Desc>Get timely updates from your favorite products.</Desc>
+      <Title>Liên hệ với chúng tôi</Title>
+      <Desc>
+        Nhận thông tin cập nhật kịp thời từ các sản phẩm yêu thích của bạn.
+      </Desc>
       <InputContainer>
         <Input placeholder="Your email" />
         <Button>

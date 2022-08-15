@@ -10,13 +10,16 @@ import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
+import NumberFormat from "react-number-format";
 
-const Container = styled.div``;
+const Container = styled.div`
+`;
 
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
   ${mobile({ padding: "10px", flexDirection: "column" })}
+  background-color: rgb(221, 231, 222);
 `;
 
 const ImgContainer = styled.div`
@@ -164,7 +167,15 @@ const Product = () => {
         <InfoContainer>
           <Title>{product.title}</Title>
           <Desc>{product.desc}</Desc>
-          <Price>$ {product.price}</Price>
+          <Price>
+            <NumberFormat
+              value={product.price}
+              className="foo"
+              displayType={"text"}
+              thousandSeparator={true}
+              renderText={(value, props) => <div {...props}>{value} đ</div>}
+            />
+          </Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>

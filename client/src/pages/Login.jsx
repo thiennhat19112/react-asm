@@ -1,9 +1,12 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { login } from "../redux/apiCalls";
+import { login, loginGoogle } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { GoogleLogin } from "react-google-login";
+import { gapi } from "gapi-script";
+import GoogleButton from "react-google-button"; 
 
 const Container = styled.div`
   width: 100vw;
@@ -73,7 +76,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const history = useHistory()
+  const history = useHistory();
   const { isFetching, error } = useSelector((state) => state.user);
   console.log(error);
 
@@ -81,13 +84,43 @@ const Login = () => {
     e.preventDefault();
     login(dispatch, { username, password });
     history.goBack();
-  };  
+  };
 
+  const clientId =
+    "330584343026-38d75h7d60mlh7mhsa1kbse1sunj8u4i.apps.googleusercontent.com";
+
+  const start = () => {
+    gapi.client.init({
+      clientId: clientId,
+      scope: "",
+    });
+  };
+
+  const loginSuccess = async (response) => {
+    try {
+      await gapi.load("client:auth2", start);
+    } catch (error) {
+      throw new Error(error);
+    }
+    const {googleId,email,imageUrl,name} = response.profileObj
+    const user = {
+      id : googleId,
+      email : email,
+      img : imageUrl,
+      name : name
+    }
+    loginGoogle(dispatch,user);
+    history.goBack();
+  };
+
+  const loginFailure = (response) => {
+    console.log(response);
+  };
 
   return (
     <Container>
       <Wrapper>
-        <Title>SIGN IN</Title>
+        <Title>SIGN IN With PHIENPHIEN</Title>
         <Form>
           <Input
             placeholder="username"
@@ -101,9 +134,20 @@ const Login = () => {
           <Button onClick={handleClick} disabled={isFetching}>
             LOGIN
           </Button>
-          <Button disabled={isFetching}>
-            Google
-          </Button>
+          <GoogleLogin
+            clientId={clientId}
+            onSuccess={loginSuccess}
+            onFailure={loginFailure}
+            cookiePolicy={"single_host_origin"}
+            render={(renderProps) => (
+              <GoogleButton
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+              >
+                Sign in with Google
+              </GoogleButton>
+            )}
+          />
           {error && <Error>Something went wrong...</Error>}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>

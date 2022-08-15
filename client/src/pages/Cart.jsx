@@ -9,7 +9,7 @@ import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useHistory } from "react-router";
-import { deleteProduct } from "../redux/cartRedux";
+import { decrementQuantity, deleteProduct, incrementQuantity } from "../redux/cartRedux";
 
 const KEY =
   "pk_test_51LVVTxHaz5igCrdpHFddbkFGPnakDeem2AfPoXPeZHAd4A4Y0sGkLNKuwLhlwNw5hmOi64iVCLVhgMnJOUlluzPC00dzh9ikIX";
@@ -181,6 +181,11 @@ const Cart = () => {
     dispatch(deleteProduct({ ...product, index }));
   };
 
+  const handelQuantity = (definition,index)=>{
+    if(definition === "+") return dispatch(incrementQuantity(index));
+    dispatch(decrementQuantity(index))
+  }
+
   useEffect(() => {
     const makeRequest = async () => {
       try {
@@ -201,18 +206,18 @@ const Cart = () => {
       <Navbar />
       <Announcement />
       <Wrapper>
-        <Title>YOUR BAG</Title>
+        <Title>GIỎ HÀNG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <TopButton>TIẾP TỤC MUA SẮM</TopButton>
           <TopTexts>
-            <TopText>Shopping Bag({quantity})</TopText>
+            <TopText>Số lượng sản phẩm({quantity})</TopText>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
         </Top>
         <Bottom>
           <Info>
             {cart.products.map((product, index) => (
-              <Product>
+              <Product key={product._id}>
                 <ProductDetail>
                   <Image src={product.img} />
                   <Details>
@@ -230,12 +235,12 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
+                    <Add onClick={()=>handelQuantity("+",index)} style={{cursor:"pointer"}}/>
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <Remove onClick={()=>handelQuantity("-",index)} style={{cursor:"pointer"}}/>
                   </ProductAmountContainer>
                   <ProductPrice>
-                    $ {product.price * product.quantity}
+                     {(product.price * product.quantity)}
                   </ProductPrice>
                   <Icon onClick={() => handleDelete(product, index)}>
                     <i class="fa-solid fa-trash"></i>
@@ -246,7 +251,7 @@ const Cart = () => {
             <Hr />
           </Info>
           <Summary>
-            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+            <SummaryTitle>TỔNG HOÁ ĐƠN</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
               <SummaryItemPrice>{cart.total}</SummaryItemPrice>
@@ -256,11 +261,11 @@ const Cart = () => {
               <SummaryItemPrice>{cart.total}</SummaryItemPrice>
             </SummaryItem>
             <StripeCheckout
-              name="Lama Shop"
-              image="https://avatars.githubusercontent.com/u/1486366?v=4"
+              name="Phien Phien shop"
+              image="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/292058755_784154379667545_3627142211404707608_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=Yl0FsByQhOoAX-QRRzN&_nc_oc=AQl_aZAgzIvGaLXPV_qvOBqPMV0fakZOS-EXqfAIaSbXqbraVJYsI8jU-VnaWFY1NtDSmSp77xw0DgAIuEXsNBRP&tn=oY9457hGXB7x8Lpe&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT_ySi_w1r4gPywQQMPGjvq1b7VDsceRGpUUYOShKNve5g&oe=62FBA6DB"
               billingAddress
               shippingAddress
-              description={`Your total is $${cart.total}`}
+              description={`Tổng đơn hàng của bạn is ${cart.total}`}
               amount={cart.total}
               token={onToken}
               stripeKey={KEY}

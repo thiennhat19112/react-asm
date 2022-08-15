@@ -56,6 +56,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/login/google",async (req,res)=>{
+  console.log(req.body);
   const idGoogle = req.body.id;
   const user = await User.findOne({username:idGoogle});
   if(!user) {
@@ -67,6 +68,7 @@ router.post("/login/google",async (req,res)=>{
         process.env.PASS_SEC
       ).toString(),
     })
+    console.log(newUser);
     try {
       const savedUser = await newUser.save();
       const accessToken = jwt.sign(
