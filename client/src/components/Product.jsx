@@ -5,6 +5,8 @@ import {
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import NumberFormat from "react-number-format";
+import { mobile } from "../responsive";
 
 const Info = styled.div`
   opacity: 0;
@@ -33,6 +35,7 @@ const Container = styled.div`
   background-color: #f5fbfd;
   position: relative;
   overflow: hidden;
+  flex-direction: column;
   &:hover ${Info}{
     opacity: 1;
   }
@@ -50,6 +53,7 @@ const Image = styled.img`
   z-index: 2;
   width:100%;
   overflow:hidden;
+  ${mobile({ height : "100%" })}
 `;
 
 const Icon = styled.div`
@@ -68,6 +72,10 @@ const Icon = styled.div`
   }
 `;
 
+const Price = styled.span `
+  text-align:center;
+`
+
 const Product = ({ item }) => {
   return (
     <Container>
@@ -83,6 +91,16 @@ const Product = ({ item }) => {
           <FavoriteBorderOutlined />
         </Icon>
       </Info>
+    <Price>
+        {" "}
+        <NumberFormat
+          value={item.price}
+          className="foo"
+          displayType={"text"}
+          thousandSeparator={true}
+          renderText={(value, props) => <div {...props}>{value} đ</div>}
+        />
+      </Price>
     </Container>
   );
 };

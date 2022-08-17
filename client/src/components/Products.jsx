@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Product from "./Product";
 import axios from "axios";
 
@@ -8,6 +8,38 @@ const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+`;
+
+const CircleLoading = keyframes`
+from {
+  transform: rotate(0deg);
+}
+to {
+  transform: rotate(360deg);
+}
+`;
+
+const Loading = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border-radius: 5rem;
+  position: relative;
+  margin: 0 auto;
+  color: #6a5af9;
+  animation: ${CircleLoading} 1s forwards infinite linear;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    border: 0.3rem solid transparent;
+    border-right-color: #6a5af9;
+    border-bottom-color: #6a5af9;
+    animation: circleLoading 1s forwards infinite linear;
+  }
 `;
 
 const Products = ({ cat, filters, sort }) => {
@@ -19,8 +51,8 @@ const Products = ({ cat, filters, sort }) => {
       try {
         const res = await axios.get(
           cat
-            ? `http://localhost:5000/api/products?category=${cat}`
-            : "http://localhost:5000/api/products"
+            ? `https://phienphien-shop.herokuapp.com/api/products?category=${cat}`
+            : "https://phienphien-shop.herokuapp.com/api/products"
         );
         setProducts(res.data);
       } catch (err) {}
@@ -55,7 +87,9 @@ const Products = ({ cat, filters, sort }) => {
     }
   }, [sort]);
 
-  return (
+  return (products.length === 0 ? (
+    <Loading />
+  ) : (
     <Container>
       {cat
         ? filteredProducts.map((item) => <Product item={item} key={item.id} />)
@@ -63,7 +97,7 @@ const Products = ({ cat, filters, sort }) => {
             .slice(0, 12)
             .map((item) => <Product item={item} key={item.id} />)}
     </Container>
-  );
+  ))
 };
 
 export default Products;

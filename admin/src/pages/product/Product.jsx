@@ -161,7 +161,7 @@ export default function Product() {
               <label for="file">
                 <Publish />
               </label>
-              <input type="file" id="file" style={{ display: "none" }} />
+              <input onChange={handleChange} name="img" type="file" id="file" style={{ display: "none" }} />
             </div>
             <button type="button" onClick={handleUpdate} className="productButton">
               Update
